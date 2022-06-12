@@ -18,8 +18,8 @@ if (APPLE)
   set(DEAL_II_DIR /Applications/deal.II.app/Contents/Resources/Libraries/lib/cmake/deal.II)
 endif()
 find_package(deal.II REQUIRED
-  HINTS ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
-)
+    HINTS ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
+    )
 deal_ii_initialize_cached_variables()
 message("deal.II_VERSION=${DEAL_II_VERSION}")
 

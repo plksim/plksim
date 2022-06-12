@@ -20,7 +20,7 @@ A toolkit for developing simulation applications using Finite Element Method
 Build library:
 
 ``` bash
-$ ./build.sh			# Build debug
-$ ./build.sh test		# Build debug and run tests
-$ ./build.sh release	# Build release
+$ ./build.sh             # Build debug
+$ ./build.sh test        # Build debug and run tests
+$ ./build.sh release     # Build release
 ```

@@ -8,6 +8,6 @@ namespace plksim {
 
 #define STR(x) STR_HELPER(x)
 #define STR_HELPER(x) #x
-#define VERSION_STRING STR(MAJOR_VERSION) "." STR(MINOR_VERSION) "." STR(PATCH_VERSION)
+#define VERSION STR(MAJOR_VERSION) "." STR(MINOR_VERSION) "." STR(PATCH_VERSION)
 
 } // namespace plksim
