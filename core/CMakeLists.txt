@@ -1,21 +1,23 @@
 # =============================================================================
 # Library
 # =============================================================================
-set(HEADERS
-	include/plksim/version.hh
-	src/utils/timer.hh
-	)
-
-set(SRCS
-	src/utils/timer.cc
-	)
+file(GLOB_RECURSE PUBLIC_HEADERS "include/**/*.hh")
+file(GLOB_RECURSE PRIVATE_HEADERS "src/**/*.hh")
+file(GLOB_RECURSE SRCS "src/**/*.cc")
 
 set(LIBS
-	)
+    )
 
-add_library(plksim ${HEADERS} ${SRCS})
+add_library(plksim ${PUBLIC_HEADERS} ${PRIVATE_HEADERS} ${SRCS})
 deal_ii_setup_target(plksim)
 target_link_libraries(plksim PRIVATE ${LIBS})
+
+install(TARGETS plksim 
+    ARCHIVE DESTINATION lib
+    )
+install(DIRECTORY
+    "include/plksim" DESTINATION include
+)
 
 
 # =============================================================================
@@ -24,10 +26,7 @@ target_link_libraries(plksim PRIVATE ${LIBS})
 find_package(GTest REQUIRED)
 message("GTest_VERSION=${GTest_VERSION}")
 
-set(TESTS
-	test/utils/timer.test.cc
-	test/version.test.cc
-	)
+file(GLOB_RECURSE TESTS "test/**/*.test.cc")
 
 add_executable(plksim_test ${TESTS})
 target_link_libraries(plksim_test PRIVATE plksim ${LIBS})

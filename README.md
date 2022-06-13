@@ -23,4 +23,5 @@ Build library:
 $ ./build.sh             # Build debug
 $ ./build.sh test        # Build debug and run tests
 $ ./build.sh release     # Build release
+$ ./build.sh install     # Build release and install library
 ```
