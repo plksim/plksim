@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+set(PLKSIM_VERSION "@LIB_VERSION@")
+set(PLKSIM_LIBRARIES "@LIB_LIBRARIES@")
+
+check_required_components(${PROJECT_NAME})

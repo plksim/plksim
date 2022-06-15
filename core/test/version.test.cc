@@ -7,9 +7,9 @@ using ::testing::MatchesRegex;
 namespace plksim {
 
 TEST(version, versionCode) {
-  ASSERT_GE(MAJOR_VERSION, 0);
-  ASSERT_GE(MINOR_VERSION, 0);
-  ASSERT_GE(PATCH_VERSION, 0);
+  ASSERT_GE(VERSION_MAJOR, 0);
+  ASSERT_GE(VERSION_MINOR, 0);
+  ASSERT_GE(VERSION_PATCH, 0);
 }
 
 TEST(version, versionString) {

@@ -2,12 +2,9 @@
 
 namespace plksim {
 
-#define MAJOR_VERSION 0
-#define MINOR_VERSION 1
-#define PATCH_VERSION 0
-
-#define STR(x) STR_HELPER(x)
-#define STR_HELPER(x) #x
-#define VERSION STR(MAJOR_VERSION) "." STR(MINOR_VERSION) "." STR(PATCH_VERSION)
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 1
+#define VERSION_PATCH 0
+#define VERSION "0.1.0"
 
 } // namespace plksim
