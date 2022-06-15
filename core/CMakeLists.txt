@@ -29,14 +29,18 @@ add_library(${PROJECT_NAME} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS} ${SRCS})
 deal_ii_setup_target(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
-include(CMakePackageConfigHelpers)
 set(LIB_VERSION ${PROJECT_VERSION})
 set(LIB_LIBRARIES ${PROJECT_NAME} ${DEAL_II_LIBRARIES_RELEASE} ${LIBS})
+set(LIB_INCLUDE_INSTALL_DIR include)
+set(LIB_INSTALL_DIR lib)
+
+include(CMakePackageConfigHelpers)
 configure_file(include/${PROJECT_NAME}/version.hh.cmake.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.hh)
 configure_package_config_file(config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
+    INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}
+    PATH_VARS LIB_INCLUDE_INSTALL_DIR LIB_INSTALL_DIR
     )
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
@@ -49,14 +53,14 @@ write_basic_package_version_file(
 # define install
 # =============================================================================
 install(TARGETS ${PROJECT_NAME}
-    ARCHIVE DESTINATION lib
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
     )
 install(DIRECTORY include/${PROJECT_NAME}
-    DESTINATION include
+    DESTINATION ${LIB_INCLUDE_INSTALL_DIR}
     )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    DESTINATION lib/cmake/${PROJECT_NAME}
+    DESTINATION ${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}
     )
 
 
