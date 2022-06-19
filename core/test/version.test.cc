@@ -1,20 +1,20 @@
-#include "../include/plksim/version.hh"
+#include "version.hh"
 
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
-using ::testing::MatchesRegex;
-
-namespace plksim {
+namespace plksim_test {
 
 TEST(version, versionCode) {
-  ASSERT_GE(versionMajor, 0);
-  ASSERT_GE(versionMinor, 0);
-  ASSERT_GE(versionPatch, 0);
+  ASSERT_GE(plksim::versionMajor, 0);
+  ASSERT_GE(plksim::versionMinor, 0);
+  ASSERT_GE(plksim::versionPatch, 0);
 }
 
 TEST(version, versionString) {
-  std::cout << "[**********] version = " << version << std::endl;
-  ASSERT_THAT(version, MatchesRegex("^[0-9]*\\.[0-9]*\\.[0-9]*$"));
+  std::cout << "[**********] version = " << plksim::version << std::endl;
+  std::ostringstream buffer;
+  buffer << plksim::versionMajor << "." << plksim::versionMinor << "." << plksim::versionPatch;
+  ASSERT_EQ(plksim::version, buffer.str());
 }
 
-} // namespace plksim
+} // namespace plksim_test
