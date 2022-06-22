@@ -4,17 +4,21 @@
 
 namespace plksim {
 
-Problem::Problem() : mImpl(std::make_unique<Impl>()) {
+Problem::Problem() : impl(std::make_unique<Impl>()) {
 }
 
 Problem::~Problem() = default;
 
 void Problem::load(const std::string& jsonStr) {
-  mImpl->load(jsonStr);
+  return impl->load(jsonStr);
 };
 
-std::string Problem::getType() {
-  return mImpl->getType();
+void Problem::compute(std::ostream& out, const io::OutputFormat outFormat) {
+  return impl->compute(out, outFormat);
+};
+
+std::string Problem::getType() const {
+  return impl->getType();
 };
 
 } // namespace plksim

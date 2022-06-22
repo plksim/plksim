@@ -1,9 +1,11 @@
 #include "problem_impl.hh"
 
+#include "problems/laplace_problem.hh"
+
 #include <nlohmann/json.hpp>
 
 #include <exception>
-#include <iostream>
+#include <sstream>
 
 using json = nlohmann::json;
 
@@ -18,12 +20,19 @@ void Problem::Impl::load(const std::string& jsonStr) {
   if (!obj["type"].is_string()) {
     throw std::runtime_error("wrong format: type is not defined");
   } else {
-    mType = obj["type"].get<std::string>();
+    type = obj["type"].get<std::string>();
   }
 };
 
-std::string Problem::Impl::getType() {
-  return mType;
+void Problem::Impl::compute(std::ostream& out, const io::OutputFormat outFormat) {
+  if (type == "laplace") {
+    problems::LaplaceProblem p;
+    return p.compute(out, outFormat);
+  }
+};
+
+std::string Problem::Impl::getType() const {
+  return type;
 };
 
 } // namespace plksim

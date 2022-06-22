@@ -12,11 +12,12 @@ public:
   ~Impl();
 
   void load(const std::string& jsonStr);
+  void compute(std::ostream& out, const io::OutputFormat outFormat);
 
-  std::string getType();
+  std::string getType() const;
 
 private:
-  std::string mType;
+  std::string type;
 };
 
 } // namespace plksim
