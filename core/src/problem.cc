@@ -4,8 +4,7 @@
 
 namespace plksim {
 
-Problem::Problem() : impl(std::make_unique<Impl>()) {
-}
+Problem::Problem() : impl(std::make_unique<Impl>()){};
 
 Problem::~Problem() = default;
 

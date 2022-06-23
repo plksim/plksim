@@ -26,8 +26,8 @@ void Problem::Impl::load(const std::string& jsonStr) {
 
 void Problem::Impl::compute(std::ostream& out, const io::OutputFormat outFormat) {
   if (type == "laplace") {
-    problems::LaplaceProblem p;
-    return p.compute(out, outFormat);
+    problems::LaplaceProblem<2> prob;
+    return prob.compute(out, outFormat);
   }
 };
 

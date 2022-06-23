@@ -7,26 +7,26 @@
 namespace plksim_test {
 
 TEST(problem, load) {
-  plksim::Problem pb;
-  pb.load(R"(
+  plksim::Problem prob;
+  prob.load(R"(
     {
       "type":"test"
     }
   )");
 
-  ASSERT_EQ(pb.getType(), "test");
+  ASSERT_EQ(prob.getType(), "test");
 }
 
 TEST(problem, compute) {
-  plksim::Problem pb;
-  pb.load(R"(
+  plksim::Problem prob;
+  prob.load(R"(
     {
       "type":"laplace"
     }
   )");
 
   std::ofstream out("test.vtk");
-  pb.compute(out);
+  prob.compute(out);
 }
 
 } // namespace plksim_test
