@@ -6,8 +6,8 @@ namespace plksim {
 
 const std::string version = "@PROJECT_VERSION@";
 
-const int versionMajor = @PROJECT_VERSION_MAJOR@;
-const int versionMinor = @PROJECT_VERSION_MINOR@;
-const int versionPatch = @PROJECT_VERSION_PATCH@;
+const int version_major = @PROJECT_VERSION_MAJOR@;
+const int version_minor = @PROJECT_VERSION_MINOR@;
+const int version_patch = @PROJECT_VERSION_PATCH@;
 
 } // namespace plksim

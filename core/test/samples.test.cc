@@ -4,8 +4,8 @@
 
 namespace plksim_test {
 
-TEST(samples, sampleMeshSvg) {
-  ASSERT_NO_THROW({ auto svg = plksim::sampleMeshSvg(); });
+TEST(samples, sample_mesh_svg) {
+  ASSERT_NO_THROW({ auto svg = plksim::sample_mesh_svg(); });
 }
 
 } // namespace plksim_test

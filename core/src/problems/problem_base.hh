@@ -9,7 +9,8 @@ namespace problems {
 
 class ProblemBase {
 public:
-  virtual void compute(std::ostream& out, const io::OutputFormat outFormat) = 0;
+  virtual void compute(std::ostream& out_stream, const io::OutputFormat out_format, std::ostream& log_stream) = 0;
 };
+
 } // namespace problems
 } // namespace plksim

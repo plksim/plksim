@@ -4,16 +4,16 @@
 
 namespace plksim_test {
 
-TEST(version, versionCode) {
-  ASSERT_GE(plksim::versionMajor, 0);
-  ASSERT_GE(plksim::versionMinor, 0);
-  ASSERT_GE(plksim::versionPatch, 0);
+TEST(version, version_nums) {
+  ASSERT_GE(plksim::version_major, 0);
+  ASSERT_GE(plksim::version_minor, 0);
+  ASSERT_GE(plksim::version_patch, 0);
 }
 
-TEST(version, versionString) {
+TEST(version, version_string) {
   std::cout << "[**********] version = " << plksim::version << std::endl;
   std::ostringstream buffer;
-  buffer << plksim::versionMajor << "." << plksim::versionMinor << "." << plksim::versionPatch;
+  buffer << plksim::version_major << "." << plksim::version_minor << "." << plksim::version_patch;
   ASSERT_EQ(plksim::version, buffer.str());
 }
 

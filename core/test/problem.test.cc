@@ -1,4 +1,5 @@
 #include "problem.hh"
+#include "io/output_format.hh"
 
 #include <fstream>
 
@@ -14,10 +15,10 @@ TEST(problem, load) {
     }
   )");
 
-  ASSERT_EQ(prob.getType(), "test");
+  ASSERT_EQ(prob.get_type(), "test");
 }
 
-TEST(problem, compute) {
+TEST(problem, compute_laplace) {
   plksim::Problem prob;
   prob.load(R"(
     {
@@ -25,8 +26,21 @@ TEST(problem, compute) {
     }
   )");
 
-  std::ofstream out("test.vtk");
+  std::ofstream out("laplace.vtk");
   prob.compute(out);
+}
+
+TEST(problem, compute_helmholtz) {
+  plksim::Problem prob;
+  prob.load(R"(
+    {
+      "type":"helmholtz"
+    }
+  )");
+
+  std::ofstream out("helmholtz.vtk");
+  std::ofstream log("helmholtz.log");
+  prob.compute(out, plksim::io::OutputFormat::vtk, log);
 }
 
 } // namespace plksim_test

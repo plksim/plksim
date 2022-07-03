@@ -16,19 +16,20 @@ public:
   /**
    * Load problem definition from JSON.
    *
-   * @param jsonStr    JSON string.
+   * @param json_str    JSON string.
    */
-  void load(const std::string& jsonStr);
+  void load(const std::string& json_str);
 
   /**
-   * Compute the problem, write result into out stream.
+   * Compute the problem, write result into out stream, and write processing log into log stream.
    */
-  void compute(std::ostream& out, const io::OutputFormat outFormat = io::OutputFormat::vtk);
+  void compute(std::ostream& out_stream, const io::OutputFormat out_format = io::OutputFormat::vtk,
+               std::ostream& log_stream = std::cout);
 
   /**
    * Get the type.
    */
-  std::string getType() const;
+  std::string get_type() const;
 
 private:
   class Impl;

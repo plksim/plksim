@@ -7,28 +7,28 @@
 namespace plksim {
 namespace utils {
 
-static std::atomic_ulong timerIdSeq = 0;
+static std::atomic_ulong timer_id_seq = 0;
 
-uint64_t setTimeout(std::function<void()> func, uint32_t delayMs) {
-  uint64_t timerId = ++timerIdSeq;
+uint64_t set_timeout(std::function<void()> func, uint32_t delay_ms) {
+  uint64_t timer_id = ++timer_id_seq;
 
-  timerMutex.lock();
-  timerMap.insert({timerId, false});
-  timerMutex.unlock();
+  timer_mutex.lock();
+  timer_map.insert({timer_id, false});
+  timer_mutex.unlock();
 
-  std::thread t([timerId, func, delayMs]() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+  std::thread t([timer_id, func, delay_ms]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
 
     bool cancelled = false;
 
-    timerMutex.lock();
-    auto itr = timerMap.find(timerId);
-    if (itr != timerMap.end()) {
+    timer_mutex.lock();
+    auto itr = timer_map.find(timer_id);
+    if (itr != timer_map.end()) {
       cancelled = itr->second;
 
-      timerMap.erase(itr);
+      timer_map.erase(itr);
     }
-    timerMutex.unlock();
+    timer_mutex.unlock();
 
     if (cancelled) {
       return;
@@ -38,18 +38,18 @@ uint64_t setTimeout(std::function<void()> func, uint32_t delayMs) {
   });
   t.detach();
 
-  return timerId;
+  return timer_id;
 };
 
-void clearTimeout(uint64_t timerId) {
-  timerMutex.lock();
+void clear_timeout(uint64_t timer_id) {
+  timer_mutex.lock();
 
-  auto itr = timerMap.find(timerId);
-  if (itr != timerMap.end()) {
+  auto itr = timer_map.find(timer_id);
+  if (itr != timer_map.end()) {
     itr->second = true;
   }
 
-  timerMutex.unlock();
+  timer_mutex.unlock();
 };
 
 } // namespace utils

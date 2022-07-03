@@ -7,7 +7,7 @@
 namespace plksim {
 namespace utils {
 
-dealii::DataOutBase::OutputFormat outputFormatToDealii(const io::OutputFormat format) {
+dealii::DataOutBase::OutputFormat output_format_to_dealii(const io::OutputFormat format) {
   switch (format) {
   case io::OutputFormat::dx:
     return dealii::DataOutBase::dx;

@@ -90,4 +90,4 @@ target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} ${LIBS})
 target_link_libraries(${PROJECT_NAME}_test PRIVATE GTest::gtest GTest::gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME}_test)
+gtest_discover_tests(${PROJECT_NAME}_test PROPERTIES TIMEOUT 600)

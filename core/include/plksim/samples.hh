@@ -4,6 +4,6 @@
 
 namespace plksim {
 
-std::string sampleMeshSvg();
+std::string sample_mesh_svg();
 
 } // namespace plksim

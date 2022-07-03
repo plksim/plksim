@@ -11,10 +11,10 @@ public:
   Impl();
   ~Impl();
 
-  void load(const std::string& jsonStr);
-  void compute(std::ostream& out, const io::OutputFormat outFormat);
+  void load(const std::string& json_str);
+  void compute(std::ostream& out_stream, const io::OutputFormat out_format, std::ostream& log_stream);
 
-  std::string getType() const;
+  std::string get_type() const;
 
 private:
   std::string type;

@@ -10,15 +10,15 @@ using namespace dealii;
 
 namespace plksim {
 
-std::string sampleMeshSvg() {
+std::string sample_mesh_svg() {
   Triangulation<2> triangulation;
 
   GridGenerator::hyper_cube(triangulation);
   triangulation.refine_global(4);
 
   std::ostringstream out;
-  GridOut gridOut;
-  gridOut.write_svg(triangulation, out);
+  GridOut grid_out;
+  grid_out.write_svg(triangulation, out);
 
   return out.str();
 };
