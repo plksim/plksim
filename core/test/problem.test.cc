@@ -26,8 +26,12 @@ TEST(problem, compute_laplace) {
     }
   )");
 
-  std::ofstream out("laplace.vtk");
-  prob.compute(out);
+  prob.set_log_stream(std::cout);
+
+  std::ofstream out("laplace.vtu");
+  prob.set_output_solution_stream(out);
+
+  prob.compute();
 }
 
 TEST(problem, compute_helmholtz) {
@@ -38,9 +42,44 @@ TEST(problem, compute_helmholtz) {
     }
   )");
 
-  std::ofstream out("helmholtz.vtk");
-  std::ofstream log("helmholtz.log");
-  prob.compute(out, plksim::io::OutputFormat::vtk, log);
+  prob.set_log_stream(std::cout);
+
+  std::ofstream out("helmholtz.vtu");
+  prob.set_output_solution_stream(out);
+
+  prob.compute();
+}
+
+TEST(problem, compute_elastic) {
+  plksim::Problem prob;
+  prob.load(R"(
+    {
+      "type":"elastic"
+    }
+  )");
+
+  prob.set_log_stream(std::cout);
+
+  std::ofstream out("elastic.vtu");
+  prob.set_output_solution_stream(out);
+
+  prob.compute();
+}
+
+TEST(problem, compute_advection) {
+  plksim::Problem prob;
+  prob.load(R"(
+    {
+      "type":"advection"
+    }
+  )");
+
+  prob.set_log_stream(std::cout);
+
+  std::ofstream out("advection.vtu");
+  prob.set_output_solution_stream(out);
+
+  prob.compute();
 }
 
 } // namespace plksim_test

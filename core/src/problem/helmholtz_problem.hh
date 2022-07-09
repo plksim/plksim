@@ -2,7 +2,7 @@
 
 #include "problem_base.hh"
 #include "problem_log.hh"
-#include "utils/output_format_utils.hh"
+#include "util/output_format_util.hh"
 
 #include <deal.II/base/convergence_table.h>
 #include <deal.II/base/function.h>
@@ -30,9 +30,10 @@
 #include <deal.II/numerics/vector_tools.h>
 
 #include <array>
+#include <sstream>
 
 namespace plksim {
-namespace problems {
+namespace problem {
 
 using namespace dealii;
 
@@ -59,7 +60,8 @@ class Solution : public Function<dim>, protected SolutionBase<dim> {
 public:
   virtual double value(const Point<dim>& p, const unsigned int component = 0) const override;
 
-  virtual Tensor<1, dim> gradient(const Point<dim>& p, const unsigned int component = 0) const override;
+  virtual Tensor<1, dim> gradient(const Point<dim>& p,
+                                  const unsigned int component = 0) const override;
 };
 
 template <int dim>
@@ -80,27 +82,29 @@ Tensor<1, dim> Solution<dim>::gradient(const Point<dim>& p, const unsigned int) 
   for (const auto& center : this->source_centers) {
     const Tensor<1, dim> x_minus_xi = p - center;
 
-    return_value += (-2. / (this->width * this->width) *
-                     std::exp(-x_minus_xi.norm_square() / (this->width * this->width)) * x_minus_xi);
+    return_value +=
+        (-2. / (this->width * this->width) *
+         std::exp(-x_minus_xi.norm_square() / (this->width * this->width)) * x_minus_xi);
   }
 
   return return_value;
 }
 
 template <int dim>
-class RightHandSide : public Function<dim>, protected SolutionBase<dim> {
+class HelmholtzRhs : public Function<dim>, protected SolutionBase<dim> {
 public:
   virtual double value(const Point<dim>& p, const unsigned int component = 0) const override;
 };
 
 template <int dim>
-double RightHandSide<dim>::value(const Point<dim>& p, const unsigned int) const {
+double HelmholtzRhs<dim>::value(const Point<dim>& p, const unsigned int) const {
   double return_value = 0;
   for (const auto& center : this->source_centers) {
     const Tensor<1, dim> x_minus_xi = p - center;
 
     return_value += ((2. * dim - 4. * x_minus_xi.norm_square() / (this->width * this->width)) /
-                     (this->width * this->width) * std::exp(-x_minus_xi.norm_square() / (this->width * this->width)));
+                     (this->width * this->width) *
+                     std::exp(-x_minus_xi.norm_square() / (this->width * this->width)));
     return_value += std::exp(-x_minus_xi.norm_square() / (this->width * this->width));
   }
 
@@ -111,8 +115,7 @@ template <int dim>
 class HelmholtzProblem : public ProblemBase {
 public:
   HelmholtzProblem();
-  ~HelmholtzProblem();
-  void compute(std::ostream& out, const io::OutputFormat out_format, std::ostream& log) override;
+  void compute() override;
 
 private:
   void make_grid();
@@ -121,7 +124,7 @@ private:
   void solve();
   void refine_grid();
   void process_solution(const unsigned int cycle);
-  void output(std::ostream& out, const io::OutputFormat out_format, std::ostream& log) const;
+  void output() const;
 
   Triangulation<dim> triangulation;
   FE_Q<dim> fe;
@@ -142,11 +145,7 @@ template <int dim>
 HelmholtzProblem<dim>::HelmholtzProblem() : fe(2), dof_handler(triangulation){};
 
 template <int dim>
-HelmholtzProblem<dim>::~HelmholtzProblem(){};
-
-template <int dim>
-void HelmholtzProblem<dim>::compute(std::ostream& out_stream, const io::OutputFormat out_format,
-                                    std::ostream& log_stream) {
+void HelmholtzProblem<dim>::compute() {
   write_log("STARTED", {}, log_stream);
 
   make_grid();
@@ -163,7 +162,7 @@ void HelmholtzProblem<dim>::compute(std::ostream& out_stream, const io::OutputFo
     process_solution(cycle);
   }
 
-  output(out_stream, out_format, log_stream);
+  output();
 
   write_log("FINISHED", {}, log_stream);
 };
@@ -218,13 +217,14 @@ void HelmholtzProblem<dim>::assemble_system() {
   std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
   FEValues<dim> fe_values(fe, quadrature_formula,
-                          update_values | update_gradients | update_quadrature_points | update_JxW_values);
+                          update_values | update_gradients | update_quadrature_points |
+                              update_JxW_values);
 
   FEFaceValues<dim> fe_face_values(fe, face_quadrature_formula,
-                                   update_values | update_normal_vectors | update_quadrature_points |
-                                       update_JxW_values);
+                                   update_values | update_normal_vectors |
+                                       update_quadrature_points | update_JxW_values);
 
-  const RightHandSide<dim> right_hand_side;
+  const HelmholtzRhs<dim> right_hand_side;
   std::vector<double> rhs_values(n_q_points);
 
   Solution<dim> exact_solution;
@@ -256,8 +256,9 @@ void HelmholtzProblem<dim>::assemble_system() {
         fe_face_values.reinit(cell, face);
 
         for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point) {
-          const double neumann_value = (exact_solution.gradient(fe_face_values.quadrature_point(q_point)) *
-                                        fe_face_values.normal_vector(q_point));
+          const double neumann_value =
+              (exact_solution.gradient(fe_face_values.quadrature_point(q_point)) *
+               fe_face_values.normal_vector(q_point));
 
           for (unsigned int i = 0; i < dofs_per_cell; ++i)
             cell_rhs(i) += (fe_face_values.shape_value(i, q_point) * // phi_i(x_q)
@@ -316,19 +317,20 @@ void HelmholtzProblem<dim>::process_solution(const unsigned int cycle) {
 
   VectorTools::integrate_difference(dof_handler, solution, Solution<dim>(), difference_per_cell,
                                     QGauss<dim>(fe.degree + 1), VectorTools::L2_norm);
-  const double L2_error = VectorTools::compute_global_error(triangulation, difference_per_cell, VectorTools::L2_norm);
+  const double L2_error =
+      VectorTools::compute_global_error(triangulation, difference_per_cell, VectorTools::L2_norm);
 
   VectorTools::integrate_difference(dof_handler, solution, Solution<dim>(), difference_per_cell,
                                     QGauss<dim>(fe.degree + 1), VectorTools::H1_seminorm);
-  const double H1_error =
-      VectorTools::compute_global_error(triangulation, difference_per_cell, VectorTools::H1_seminorm);
+  const double H1_error = VectorTools::compute_global_error(triangulation, difference_per_cell,
+                                                            VectorTools::H1_seminorm);
 
   const QTrapezoid<1> q_trapez;
   const QIterated<dim> q_iterated(q_trapez, fe.degree * 2 + 1);
-  VectorTools::integrate_difference(dof_handler, solution, Solution<dim>(), difference_per_cell, q_iterated,
-                                    VectorTools::Linfty_norm);
-  const double Linfty_error =
-      VectorTools::compute_global_error(triangulation, difference_per_cell, VectorTools::Linfty_norm);
+  VectorTools::integrate_difference(dof_handler, solution, Solution<dim>(), difference_per_cell,
+                                    q_iterated, VectorTools::Linfty_norm);
+  const double Linfty_error = VectorTools::compute_global_error(triangulation, difference_per_cell,
+                                                                VectorTools::Linfty_norm);
 
   const unsigned int n_active_cells = triangulation.n_active_cells();
   const unsigned int n_dofs = dof_handler.n_dofs();
@@ -359,19 +361,22 @@ void HelmholtzProblem<dim>::process_solution(const unsigned int cycle) {
 };
 
 template <int dim>
-void HelmholtzProblem<dim>::output(std::ostream& out_stream, const io::OutputFormat out_format,
-                                   std::ostream& log_stream) const {
-  DataOut<dim> data_out;
+void HelmholtzProblem<dim>::output() const {
+  if (output_solution_stream != nullptr) {
+    DataOut<dim> data_out;
 
-  data_out.attach_dof_handler(dof_handler);
-  data_out.add_data_vector(solution, "result");
-  data_out.build_patches(fe.degree);
+    data_out.attach_dof_handler(dof_handler);
+    data_out.add_data_vector(solution, "result");
+    data_out.build_patches(fe.degree);
 
-  auto format = utils::output_format_to_dealii(out_format);
-  data_out.write(out_stream, format);
+    auto format = util::output_format_to_dealii(output_solution_format);
+    data_out.write(*output_solution_stream, format);
+  }
 
-  convergence_table.write_text(log_stream);
+  std::ostringstream table_stream;
+  convergence_table.write_text(table_stream);
+  write_log("CONVERGENCE", {{"table", table_stream.str()}}, log_stream);
 };
 
-} // namespace problems
+} // namespace problem
 } // namespace plksim

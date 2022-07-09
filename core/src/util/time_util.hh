@@ -5,7 +5,7 @@
 #include <sstream>
 
 namespace plksim {
-namespace utils {
+namespace util {
 
 std::string now_utc_time_iso() {
   auto now = std::chrono::system_clock::now();
@@ -16,10 +16,11 @@ std::string now_utc_time_iso() {
   auto ms = msec - sec;
 
   std::ostringstream ss;
-  ss << std::put_time(gmtime(&itt), "%FT%T") << "." << std::setfill('0') << std::setw(3) << ms.count() << "Z";
+  ss << std::put_time(gmtime(&itt), "%FT%T") << "." << std::setfill('0') << std::setw(3)
+     << ms.count() << "Z";
 
   return ss.str();
 };
 
-} // namespace utils
+} // namespace util
 } // namespace plksim

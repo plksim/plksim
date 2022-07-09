@@ -21,10 +21,26 @@ public:
   void load(const std::string& json_str);
 
   /**
-   * Compute the problem, write result into out stream, and write processing log into log stream.
+   * Set the stream to output log.
    */
-  void compute(std::ostream& out_stream, const io::OutputFormat out_format = io::OutputFormat::vtk,
-               std::ostream& log_stream = std::cout);
+  void set_log_stream(std::ostream& stream);
+
+  /**
+   * Set the stream to output grid.
+   */
+  void set_output_grid_stream(std::ostream& stream,
+                              const io::OutputFormat format = io::OutputFormat::vtu);
+
+  /**
+   * Set the stream to output solution.
+   */
+  void set_output_solution_stream(std::ostream& stream,
+                                  const io::OutputFormat format = io::OutputFormat::vtu);
+
+  /**
+   * Compute the problem, and write result and log into streams.
+   */
+  void compute();
 
   /**
    * Get the type.

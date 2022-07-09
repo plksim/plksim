@@ -5,7 +5,7 @@
 #include <deal.II/numerics/data_out.h>
 
 namespace plksim {
-namespace utils {
+namespace util {
 
 dealii::DataOutBase::OutputFormat output_format_to_dealii(const io::OutputFormat format) {
   switch (format) {
@@ -36,5 +36,5 @@ dealii::DataOutBase::OutputFormat output_format_to_dealii(const io::OutputFormat
   }
 };
 
-} // namespace utils
+} // namespace util
 } // namespace plksim
