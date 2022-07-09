@@ -7,5 +7,5 @@ AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
-ColumnLimit: 120
+ColumnLimit: 100
 PointerAlignment: Left
